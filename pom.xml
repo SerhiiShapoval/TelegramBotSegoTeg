@@ -12,6 +12,7 @@
         <module>dispatcher</module>
         <module>rabbitmq-service</module>
         <module>node-service</module>
+        <module>jpa-service</module>
     </modules>
 
     <properties>

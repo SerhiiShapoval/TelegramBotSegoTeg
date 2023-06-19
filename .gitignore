@@ -1,0 +1,4 @@
+# Project exclude paths
+/dispatcher/target/
+/node-service/target/
+/rabbitmq-service/target/
