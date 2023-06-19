@@ -1,0 +1,12 @@
+server:
+  port: 9090
+
+bot:
+  name : sego_teg_bot
+  token : 6019516263:AAHGIjKyXDZIiGS_UFYUctTKA81443yPXXo
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: pass
