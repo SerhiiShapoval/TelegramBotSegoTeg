@@ -19,3 +19,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+
+token: 6019516263:AAHGIjKyXDZIiGS_UFYUctTKA81443yPXXo
+service:
+  file_info:
+    uri: https://api.telegram.org/bot{token}/getFile?file_id={fileId}
+  file_storage:
+    uri: https://api.telegram.org/file/bot{token}/{filePath}
+
+
+

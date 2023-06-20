@@ -23,7 +23,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @RabbitListener(queues = TEXT_MESSAGE_UPDATE)
     public void consumerTextMessageUpdate(Update update) {
     log.debug("Node : text");
-    var sendMessage = new SendMessage().builder()
+    var sendMessage =  new SendMessage().builder()
             .chatId(update.getMessage().getChatId().toString())
             .text("hello from Node")
             .build();
@@ -34,11 +34,15 @@ public class ConsumerServiceImpl implements ConsumerService {
     @RabbitListener(queues = DOC_MESSAGE_UPDATE)
     public void consumerDocMessageUpdate(Update update) {
         log.debug("Node : doc");
+        mainService.processDocMessage(update);
+
     }
 
     @Override
     @RabbitListener(queues = PHOTO_MESSAGE_UPDATE)
     public void consumerPhotoMessageUpdate(Update update) {
+
         log.debug("Node : Photo");
+        mainService.processPhotoMessage(update);
     }
 }
