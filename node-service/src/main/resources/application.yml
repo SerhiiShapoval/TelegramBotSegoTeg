@@ -28,5 +28,9 @@ service:
   file_storage:
     uri: https://api.telegram.org/file/bot{token}/{filePath}
 
+link:
+  address: 127.0.0.1:8091
+
+hashValue: maSzVTVH6e0NtPt1dMuy62cfQGU3sMzS
 
 

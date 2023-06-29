@@ -13,6 +13,9 @@
         <module>rabbitmq-service</module>
         <module>node-service</module>
         <module>jpa-service</module>
+        <module>rest-service</module>
+        <module>utils-service</module>
+        <module>mail-service</module>
     </modules>
 
     <properties>

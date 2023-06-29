@@ -5,16 +5,15 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
-import ua.shapoval.entity.AppUser;
-import ua.shapoval.entity.UpdateData;
-import ua.shapoval.entity.UserState;
+import ua.shapoval.entity.*;
+import ua.shapoval.exeptions.UploadFileException;
 import ua.shapoval.repository.AppUserRepository;
 import ua.shapoval.repository.UpdateDataRepository;
+import ua.shapoval.service.FileService;
 import ua.shapoval.service.MainService;
 import ua.shapoval.service.ProducerService;
-
-import javax.transaction.Transactional;
+import ua.shapoval.service.enums.LinkType;
+import ua.shapoval.service.enums.ServiceCommands;
 
 import static ua.shapoval.entity.UserState.BASIC_STATE;
 import static ua.shapoval.entity.UserState.WAIT_FOR_EMAIL_STATE;
@@ -29,6 +28,8 @@ public class MainServiceImpl implements MainService {
     private final UpdateDataRepository repository;
     private final AppUserRepository userRepository;
     private final ProducerService producerService;
+    private final FileService fileService;
+
 
     @Override
     public void processTextMessage(Update update) {
@@ -37,7 +38,9 @@ public class MainServiceImpl implements MainService {
       var appUser = findOrSaveAppUser(update);
       var userState = appUser.getUserState();
       var text = update.getMessage().getText();
-      if (CANCEL.equals(text)){
+
+        var serviceCommand = ServiceCommands.fromValues(text);
+      if (CANCEL.equals(serviceCommand)){
         output = cancelProcess(appUser);
       }else if (BASIC_STATE.equals(userState)){
         output = processServiceCommand(appUser, text);
@@ -65,8 +68,19 @@ public class MainServiceImpl implements MainService {
         if (isNotAllowToSendContent(chatId, appUser)){
             return;
         }
-        var answer = " Photo uploaded successfully. Download link : ";
-        sendAnswer(answer, chatId);
+        try {
+            AppPhoto photo = fileService.processPhoto(update.getMessage());
+            String link = fileService.generateLink(photo.getId(), LinkType.GET_PHOTO);
+            var answer = " Photo uploaded successfully." +
+                    " Download link : " + link;
+            sendAnswer(answer, chatId);
+        }catch (UploadFileException exception){
+            log.error(exception);
+            var error = "Sorry, the photo could not be loaded. Please try again later";
+            sendAnswer(error, chatId);
+
+        }
+
 
     }
 
@@ -78,8 +92,17 @@ public class MainServiceImpl implements MainService {
         if (isNotAllowToSendContent(chatId, appUser)){
             return;
         }
-        var answer = " Document uploaded successfully. Download link : ";
-        sendAnswer(answer, chatId);
+        try {
+            AppDocument document = fileService.processDoc(update.getMessage());
+            String link = fileService.generateLink(document.getId(), LinkType.GET_DOC);
+            var answer = " Document uploaded successfully. Download link : " + link;
+            sendAnswer(answer, chatId);
+        }catch (UploadFileException exception){
+            log.error(exception);
+            var error = "Sorry, the file could not be loaded. Please try again later";
+            sendAnswer(error, chatId);
+        }
+
     }
 
     private boolean isNotAllowToSendContent(Long chatId, AppUser appUser) {

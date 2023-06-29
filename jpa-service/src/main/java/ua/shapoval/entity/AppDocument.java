@@ -18,8 +18,8 @@ public class AppDocument {
     private Long id;
     private String telegramFieldId;
     private String documentName;
+
     @OneToOne
-    @Column(name = "binary_content")
     private  BinaryContent binaryContent;
     private String type;
     private Long fileSize;
