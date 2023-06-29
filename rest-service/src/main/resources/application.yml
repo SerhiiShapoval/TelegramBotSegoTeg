@@ -1,0 +1,21 @@
+server:
+  port: 8091
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/telegram
+    username: root
+    password: root
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+hashValue: maSzVTVH6e0NtPt1dMuy62cfQGU3sMzS
+
+
+
+
